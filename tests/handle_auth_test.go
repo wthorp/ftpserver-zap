@@ -10,6 +10,7 @@ import (
 func TestLoginSuccess(t *testing.T) {
 	s := NewTestServer(true)
 	defer s.Stop()
+	defer s.Logger.Sync()
 
 	var err error
 	var ftp *goftp.FTP
@@ -43,6 +44,7 @@ func TestLoginSuccess(t *testing.T) {
 func TestLoginFailure(t *testing.T) {
 	s := NewTestServer(true)
 	defer s.Stop()
+	defer s.Logger.Sync()
 
 	var err error
 	var ftp *goftp.FTP

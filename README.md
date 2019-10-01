@@ -22,7 +22,7 @@ Note: this is a fork of [andrewarrow/paradise_ftp](https://github.com/andrewarro
  * Passive socket connections (EPSV and PASV commands)
  * Active socket connections (PORT command)
  * Small memory footprint
- * Only relies on the standard library except for logging which uses [go-kit log](https://github.com/go-kit/kit/tree/master/log).
+ * Only relies on the standard library except for logging which uses [zap log](https://github.com/uber-go/zap).
  * Supported extensions:
    * [AUTH](https://tools.ietf.org/html/rfc2228#page-6) - Control session protection
    * [PROT](https://tools.ietf.org/html/rfc2228#page-8) - Transfer protection

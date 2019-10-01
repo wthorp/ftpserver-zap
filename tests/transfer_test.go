@@ -143,6 +143,7 @@ func testTransferOnConnection(t *testing.T, server *server.FtpServer, active boo
 func TestFailedTransfer(t *testing.T) {
 	s := NewTestServer(true)
 	defer s.Stop()
+	defer s.Logger.Sync()
 
 	conf := goftp.Config{
 		User:     "test",

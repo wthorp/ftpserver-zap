@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/fclairamb/ftpserver/server"
-	"github.com/go-kit/kit/log"
+	"go.uber.org/zap"
 )
 
 // NewTestServer provides a test server with or without debugging
@@ -29,11 +29,8 @@ func NewTestServerWithDriver(driver *ServerDriver) *server.FtpServer {
 
 	// If we are in debug mode, we should log things
 	if driver.Debug {
-		s.Logger = log.With(
-			log.NewLogfmtLogger(log.NewSyncWriter(os.Stdout)),
-			"ts", log.DefaultTimestampUTC,
-			"caller", log.DefaultCaller,
-		)
+		logger, _ := zap.NewProduction()
+		s.Logger = *logger
 	}
 
 	if err := s.Listen(); err != nil {

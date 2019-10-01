@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-kit/kit/log/level"
+	"go.uber.org/zap"
 )
 
 // Active/Passive transfer connection handler
@@ -54,7 +54,7 @@ func (c *clientHandler) handlePASV() {
 	}
 
 	if err != nil {
-		level.Error(c.logger).Log(logKeyMsg, "Could not listen", "err", err)
+		c.logger.Error("Could not listen", zap.Error(err))
 		return
 	}
 

@@ -12,6 +12,7 @@ import (
 func TestSiteCommand(t *testing.T) {
 	s := NewTestServer(true)
 	defer s.Stop()
+	defer s.Logger.Sync()
 
 	conf := goftp.Config{
 		User:     "test",

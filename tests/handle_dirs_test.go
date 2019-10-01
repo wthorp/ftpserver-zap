@@ -57,6 +57,7 @@ func TestDirListing(t *testing.T) {
 func TestDirHandling(t *testing.T) {
 	s := NewTestServer(true)
 	defer s.Stop()
+	defer s.Logger.Sync()
 
 	var connErr error
 	var ftp *goftp.FTP
@@ -120,6 +121,7 @@ func TestDirHandling(t *testing.T) {
 func TestDirListingWithSpace(t *testing.T) {
 	s := NewTestServer(true)
 	defer s.Stop()
+	defer s.Logger.Sync()
 
 	var connErr error
 	var ftp *goftp.FTP

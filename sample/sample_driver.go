@@ -23,14 +23,13 @@ import (
 	"math/big"
 
 	"github.com/fclairamb/ftpserver/server"
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
 	"github.com/naoina/toml"
+	"go.uber.org/zap"
 )
 
 // MainDriver defines a very basic ftpserver driver
 type MainDriver struct {
-	Logger       log.Logger  // Logger
+	Logger       zap.Logger  // Logger
 	SettingsFile string      // Settings file
 	BaseDir      string      // Base directory from which to serve file
 	tlsConfig    *tls.Config // TLS config (if applies)
@@ -76,16 +75,16 @@ func (driver *MainDriver) GetSettings() (*server.Settings, error) {
 	// This is the new IP loading change coming from Ray
 	if driver.config.Server.PublicHost == "" {
 		publicIP := ""
-		level.Debug(driver.Logger).Log("msg", "Fetching our external IP address...")
+		driver.Logger.Debug("Fetching our external IP address...")
 		if publicIP, err = externalIP(); err != nil {
-			level.Warn(driver.Logger).Log("msg", "Couldn't fetch an external IP", "err", err)
+			driver.Logger.Warn("Couldn't fetch an external IP", zap.Error(err))
 		} else {
-			level.Debug(driver.Logger).Log("msg", "Fetched our external IP address", "ipAddress", driver.config.Server.PublicHost)
+			driver.Logger.Debug("Fetched our external IP address", zap.String("ipAddress", driver.config.Server.PublicHost))
 		}
 
 		// Adding a special case for loopback clients (issue #74)
 		driver.config.Server.PublicIPResolver = func(cc server.ClientContext) (string, error) {
-			level.Debug(driver.Logger).Log("msg", "Resolving public IP", "remoteAddr", cc.RemoteAddr())
+			driver.Logger.Debug("Resolving public IP", zap.String("remoteAddr", cc.RemoteAddr().String()))
 			if strings.HasPrefix(cc.RemoteAddr().String(), "127.0.0.1") {
 				return "127.0.0.1", nil
 			}
@@ -104,7 +103,7 @@ func (driver *MainDriver) GetSettings() (*server.Settings, error) {
 func (driver *MainDriver) GetTLSConfig() (*tls.Config, error) {
 
 	if driver.tlsConfig == nil {
-		level.Info(driver.Logger).Log("msg", "Loading certificate")
+		driver.Logger.Info("Loading certificate")
 		if cert, err := driver.getCertificate(); err == nil {
 			driver.tlsConfig = &tls.Config{
 				NextProtos:   []string{"ftp"},
@@ -121,11 +120,11 @@ func (driver *MainDriver) GetTLSConfig() (*tls.Config, error) {
 // This implementation of the driver doesn't load a certificate from a file on purpose. But it any proper implementation
 // should most probably load the certificate from a file using tls.LoadX509KeyPair("cert_pub.pem", "cert_priv.pem").
 func (driver *MainDriver) getCertificate() (*tls.Certificate, error) {
-	level.Info(driver.Logger).Log("msg", "Creating certificate")
+	driver.Logger.Info("Creating certificate")
 	priv, err := rsa.GenerateKey(rand.Reader, 2048)
 
 	if err != nil {
-		level.Error(driver.Logger).Log("msg", "Could not generate key", "err", err)
+		driver.Logger.Error("Could not generate key", zap.Error(err))
 		return nil, err
 	}
 
@@ -151,7 +150,7 @@ func (driver *MainDriver) getCertificate() (*tls.Certificate, error) {
 	derBytes, err := x509.CreateCertificate(rand.Reader, template, template, &priv.PublicKey, priv)
 
 	if err != nil {
-		level.Error(driver.Logger).Log("msg", "Could not create cert", "err", err)
+		driver.Logger.Error("Could not create cert", zap.Error(err))
 		return nil, err
 	}
 
@@ -331,7 +330,7 @@ func NewSampleDriver(dir string, settingsFile string) (*MainDriver, error) {
 	}
 
 	drv := &MainDriver{
-		Logger:       log.NewNopLogger(),
+		Logger:       *zap.NewNop(),
 		SettingsFile: settingsFile,
 		BaseDir:      dir,
 	}

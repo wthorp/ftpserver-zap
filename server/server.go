@@ -5,15 +5,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
-)
-
-const (
-	// logKeyMsg is the human-readable part of the log
-	logKeyMsg = "msg"
-	// logKeyAction is the machine-readable part of the log
-	logKeyAction = "action"
+	"go.uber.org/zap"
 )
 
 // CommandDescription defines which function should be used and if it should be open to anyone or only logged in users
@@ -81,7 +73,7 @@ func init() {
 // FtpServer is where everything is stored
 // We want to keep it as simple as possible
 type FtpServer struct {
-	Logger        log.Logger   // Go-Kit logger
+	Logger        zap.Logger   // zap logger
 	settings      *Settings    // General settings
 	listener      net.Listener // listener used to receive files
 	clientCounter uint32       // Clients counter
@@ -124,12 +116,12 @@ func (server *FtpServer) Listen() error {
 		server.listener, err = net.Listen("tcp", server.settings.ListenAddr)
 
 		if err != nil {
-			level.Error(server.Logger).Log(logKeyMsg, "Cannot listen", "err", err)
+			server.Logger.Error("Cannot listen", zap.Error(err))
 			return err
 		}
 	}
 
-	level.Info(server.Logger).Log(logKeyMsg, "Listening...", logKeyAction, "ftp.listening", "address", server.listener.Addr())
+	server.Logger.Info("Listening...", zap.String("action", "ftp.listening"), zap.String("address", server.listener.Addr().String()))
 
 	return err
 }
@@ -140,7 +132,7 @@ func (server *FtpServer) Serve() {
 		connection, err := server.listener.Accept()
 		if err != nil {
 			if server.listener != nil {
-				level.Error(server.Logger).Log(logKeyMsg, "Accept error", "err", err)
+				server.Logger.Error("Accept error", zap.Error(err))
 			}
 			break
 		}
@@ -155,7 +147,7 @@ func (server *FtpServer) ListenAndServe() error {
 		return err
 	}
 
-	level.Info(server.Logger).Log(logKeyMsg, "Starting...", logKeyAction, "ftp.starting")
+	server.Logger.Info("Starting...", zap.String("action", "ftp.starting"))
 
 	server.Serve()
 
@@ -168,7 +160,7 @@ func (server *FtpServer) ListenAndServe() error {
 func NewFtpServer(driver MainDriver) *FtpServer {
 	return &FtpServer{
 		driver: driver,
-		Logger: log.NewNopLogger(),
+		Logger: *zap.NewNop(),
 	}
 }
 
@@ -195,12 +187,12 @@ func (server *FtpServer) clientArrival(conn net.Conn) error {
 	c := server.newClientHandler(conn, id)
 	go c.HandleCommands()
 
-	level.Info(c.logger).Log(logKeyMsg, "FTP Client connected", logKeyAction, "ftp.connected", "clientIp", conn.RemoteAddr())
+	c.logger.Info("FTP Client connected", zap.String("action", "ftp.connected"), zap.String("clientIp", conn.RemoteAddr().String()))
 
 	return nil
 }
 
 // clientDeparture
 func (server *FtpServer) clientDeparture(c *clientHandler) {
-	level.Info(c.logger).Log(logKeyMsg, "FTP Client disconnected", logKeyAction, "ftp.disconnected", "clientIp", c.conn.RemoteAddr())
+	c.logger.Info("FTP Client disconnected", zap.String("action", "ftp.disconnected"), zap.String("clientIp", c.conn.RemoteAddr().String()))
 }
