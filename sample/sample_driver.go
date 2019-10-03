@@ -22,7 +22,7 @@ import (
 	"encoding/pem"
 	"math/big"
 
-	"github.com/fclairamb/ftpserver/server"
+	"github.com/wthorp/ftpserver-zap/server"
 	"github.com/naoina/toml"
 	"go.uber.org/zap"
 )

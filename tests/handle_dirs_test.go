@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/fclairamb/ftpserver/server"
+	"github.com/wthorp/ftpserver-zap/server"
 	"gopkg.in/dutchcoders/goftp.v1"
 )
 

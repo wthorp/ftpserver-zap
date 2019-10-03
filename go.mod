@@ -1,9 +1,8 @@
 module github.com/wthorp/ftpserver-zap
 
 require (
+	github.com/wthorp/ftpserver-zap v0.0.0-20181215165500-058ccd38e144
 	github.com/go-kit/kit v0.8.0
-	github.com/go-logfmt/logfmt v0.4.0 // indirect
-	github.com/naoina/go-stringutil v0.1.0 // indirect
 	github.com/naoina/toml v0.1.1
 	github.com/secsy/goftp v0.0.0-20190720192957-f31499d7c79a
 	go.uber.org/atomic v1.4.0 // indirect

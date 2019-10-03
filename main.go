@@ -8,8 +8,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/fclairamb/ftpserver/sample"
-	"github.com/fclairamb/ftpserver/server"
+	"github.com/wthorp/ftpserver-zap/sample"
+	"github.com/wthorp/ftpserver-zap/server"
 	"go.uber.org/zap"
 )
 

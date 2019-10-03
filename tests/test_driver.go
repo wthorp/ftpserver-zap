@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/fclairamb/ftpserver/server"
+	"github.com/wthorp/ftpserver-zap/server"
 	"go.uber.org/zap"
 )
 

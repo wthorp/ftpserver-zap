@@ -1,3 +1,5 @@
+github.com/wthorp/ftpserver-zap v0.0.0-20181215165500-058ccd38e144 h1:2JV3ttpI2dtCPvcJ/vOLegrdo/O7XZwLE9YMLOIjYLE=
+github.com/wthorp/ftpserver-zap v0.0.0-20181215165500-058ccd38e144/go.mod h1:fdc9KxrwRQMiqOHDfxTCFoDqrw8EWU2c8qlTnbZNngw=
 github.com/go-kit/kit v0.8.0 h1:Wz+5lgoB0kkuqLEc6NVmwRknTKP6dTGbSqvhZtBI/j0=
 github.com/go-kit/kit v0.8.0/go.mod h1:xBxKIO96dXMWWy0MnWVtmwkA9/13aqxPnvrjFYMA2as=
 github.com/go-logfmt/logfmt v0.4.0 h1:MP4Eh7ZCb31lleYCFuwm0oe4/YGak+5l1vA2NOE80nA=
