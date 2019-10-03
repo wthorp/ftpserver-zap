@@ -1,4 +1,4 @@
-module github.com/fclairamb/ftpserver
+module github.com/wthorp/ftpserver-zap
 
 require (
 	github.com/go-kit/kit v0.8.0
